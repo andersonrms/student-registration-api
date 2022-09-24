@@ -4,7 +4,8 @@ class UserController {
   async store(req, res) {
     try {
       const novoUser = await User.create(req.body);
-      return res.status(200).json(novoUser);
+      const { id, nome, email } = novoUser;
+      return res.status(200).json({ id, nome, email });
     } catch (e) {
       console.log(e);
       return res.status(400).json({
@@ -48,7 +49,8 @@ class UserController {
       }
 
       const userUpdated = await user.update(req.body);
-      return res.status(200).json(userUpdated);
+      const { id, nome, email } = userUpdated;
+      return res.status(200).json({ id, nome, email });
     } catch (e) {
       return res.status(400).json({
         erros: e.errors.map((err) => err.message),
@@ -58,11 +60,6 @@ class UserController {
 
   async delete(req, res) {
     try {
-      if (!req.userId) {
-        return res.status(400).json({
-          error: ['ID não enviado'],
-        });
-      }
       const user = await User.findByPk(req.userId);
       if (!user) {
         return res.status(400).json({
