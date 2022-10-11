@@ -1,7 +1,6 @@
 import multer from 'multer';
 import multerConfig from '../config/multerConfig';
 import Foto from '../models/Foto';
-// import Aluno from '../models/Aluno';
 
 const upload = multer(multerConfig).single('foto');
 
@@ -14,11 +13,17 @@ class FotoController {
         });
       }
 
-      const { originalname, filename } = req.file;
-      const { aluno_id } = req.body;
-      const foto = await Foto.create({ aluno_id, originalname, filename });
+      try {
+        const { originalname, filename } = req.file;
+        const { aluno_id } = req.body;
+        const foto = await Foto.create({ aluno_id, originalname, filename });
 
-      return res.json(foto);
+        return res.json(foto);
+      } catch (e) {
+        return res.status(400).json({
+          errors: ['Aluno não existe'],
+        });
+      }
     });
   }
 }
